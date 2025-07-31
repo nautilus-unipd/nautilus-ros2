@@ -13,9 +13,9 @@ git clone git@github.com:nautilus-unipd/raspberry-setup.git
 git checkout autodocking
 
 # build the docker image (my need sudo)
-docker build -t rasp-test:latest # this may take a while (~600s raspberry pi 5)
+docker build -t rasp-test:latest .# this may take a while (~600s raspberry pi 5)
 ```
-After doing this, return to this  
+After doing this, return to this repo.
 
 ## 1. Start the ros2 docker container
 Run the `connect.sh`, the first time this will download the container from the `raspbery-setup` repo, this may take a while (it needs to download ~3.5Gb). After the first time, it simply connects to it, no dowloads needed. 
