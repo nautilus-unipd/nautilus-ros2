@@ -1,0 +1,14 @@
+services:
+  raspberry:
+    image: rasp-test # Replace with your actual image name
+    privileged: true
+    network_mode: "host"
+    volumes:
+      - /dev:/dev
+      - /run/udev:/run/udev
+      - $HOME/nautilus-ros2:/home/ubuntu/nautilus-ros2
+    group_add:
+      - video
+    stdin_open: true
+    tty: true
+    container_name: raspberry_setup

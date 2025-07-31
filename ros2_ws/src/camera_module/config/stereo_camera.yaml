@@ -1,0 +1,24 @@
+# Camera Configuration for ROS2
+# This file contains parameters for camera setup and image processing
+
+/**:
+  ros__parameters:
+    # Camera device settings
+    camera_index: 0  # Will be overridden by launch file for each camera
+    topic_name: 'image'
+
+    # Image resolution
+    width: 640
+    height: 480
+
+    # Frame rate
+    fps: 30
+
+    # Publishing settings
+    publish_rate: 30.0
+    frame_id: "camera_frame"
+    
+    # System identification
+    system_position: "front"  # front, back - will be overridden by launch file
+    camera_side: "left"       # left, right - will be overridden by launch file
+
