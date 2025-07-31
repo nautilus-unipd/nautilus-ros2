@@ -11,7 +11,7 @@ def generate_launch_description():
             parameters=[{
                 'left_camera_topic': '/camera_left/image',
                 'right_camera_topic': '/camera_right/image',
-                'web_port': 8080
+                'web_port': 8081
             }]
         )
     ])

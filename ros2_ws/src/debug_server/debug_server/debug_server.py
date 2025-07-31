@@ -21,7 +21,7 @@ class DebugServer(Node):
         global camera_modules
         camera_modules = {}
         
-        self.declare_parameter('web_port', 8080)
+        self.declare_parameter('web_port', 8081)
         self.web_port = self.get_parameter('web_port').get_parameter_value().integer_value
         
         self.qos_profile = qos_profile_sensor_data

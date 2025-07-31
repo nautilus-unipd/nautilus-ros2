@@ -1,6 +1,6 @@
 services:
   raspberry:
-    image: rasp-test # Replace with your actual image name
+    image: rasp-test # Replace with your actual image name of the github repo
     privileged: true
     network_mode: "host"
     volumes:
