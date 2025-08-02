@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# change this when changes form the autodocking branch are merged
-# CONTAINER_ID=$(docker ps -q --filter "ancestor=ghcr.io/nautilus-unipd/raspberry-setup:latest" | head -n 1)
-CONTAINER_ID=$(docker ps -q --filter "rasp-test" | head -n 1)
+CONTAINER_ID=$(docker ps -q --filter "name=nautilus-ros2*" | head -n 1)
 
 if [ -n "$CONTAINER_ID" ]; then
     echo "exec"
