@@ -55,7 +55,7 @@ def generate_launch_description():
             package='camera_module',
             executable='capture_node',
             name='capture_node_left',
-            namespace=['camera_', system_position, '/camera_left'],
+            namespace=[system_position, '/camera_left'],
             parameters=[
                 config_file,
                 {
@@ -70,7 +70,7 @@ def generate_launch_description():
             package='camera_module',
             executable='capture_node',
             name='capture_node_right',
-            namespace=['camera_', system_position, '/camera_right'],
+            namespace=[system_position, '/camera_right'],
             parameters=[
                 config_file,
                 {

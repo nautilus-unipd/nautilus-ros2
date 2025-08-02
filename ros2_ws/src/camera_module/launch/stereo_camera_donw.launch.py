@@ -17,20 +17,28 @@ def generate_launch_description():
             package='camera_module',
             executable='capture_node',
             name='capture_node_left',
-            namespace='camera_left',
+            namespace='down/camera_left',
             parameters=[
                 config_file,
-                {'camera_index': 0}  # Override camera_index for left camera
+                {
+                    'camera_index': 0,  # Override camera_index for left camera
+                    'system_position': 'down',
+                    'camera_side': 'left'
+                }
             ]
         ),
         Node(
             package='camera_module',
             executable='capture_node',
             name='capture_node_right',
-            namespace='camera_right',
+            namespace='down/camera_right',
             parameters=[
                 config_file,
-                {'camera_index': 1}  # Override camera_index for right camera
+                {
+                    'camera_index': 1,  # Override camera_index for right camera
+                    'system_position': 'down',
+                    'camera_side': 'right'
+                }
             ]
         )
     ])
