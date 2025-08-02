@@ -15,7 +15,6 @@ setup(
             'config/stereo_camera.yaml'
         ]),
         (os.path.join('share', package_name, 'launch'), [
-            'launch/dual_camera.launch.py',
             'launch/stereo_camera_configurable.launch.py',
             'launch/stereo_camera_front.launch.py',
             'launch/stereo_camera_back.launch.py'
