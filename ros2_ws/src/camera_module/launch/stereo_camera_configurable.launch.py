@@ -26,6 +26,12 @@ def generate_launch_description():
         description='Index of the right camera device'
     )
     
+    quality_arg = DeclareLaunchArgument(
+        'quality',
+        default_value='85',
+        description='Camera image quality (0-100, higher is better)'
+    )
+    
     # Get the path to the config file
     config_file = os.path.join(
         get_package_share_directory('camera_module'),
@@ -37,11 +43,13 @@ def generate_launch_description():
     system_position = LaunchConfiguration('system_position')
     left_camera_index = LaunchConfiguration('left_camera_index')
     right_camera_index = LaunchConfiguration('right_camera_index')
+    quality = LaunchConfiguration('quality')
     
     return LaunchDescription([
         system_position_arg,
         left_camera_index_arg,
         right_camera_index_arg,
+        quality_arg,
         
         Node(
             package='camera_module',
@@ -53,7 +61,8 @@ def generate_launch_description():
                 {
                     'camera_index': left_camera_index,
                     'system_position': system_position,
-                    'camera_side': 'left'
+                    'camera_side': 'left',
+                    'quality': quality
                 }
             ]
         ),
@@ -67,7 +76,8 @@ def generate_launch_description():
                 {
                     'camera_index': right_camera_index,
                     'system_position': system_position,
-                    'camera_side': 'right'
+                    'camera_side': 'right',
+                    'quality': quality
                 }
             ]
         )

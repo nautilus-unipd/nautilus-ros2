@@ -3,7 +3,7 @@ import time
 import threading
 import re
 from rclpy.node import Node
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, CompressedImage
 from rclpy.qos import qos_profile_sensor_data
 import numpy as np
 import cv2
@@ -36,18 +36,25 @@ class DebugServer(Node):
         
         topic_list = self.get_topic_names_and_types()
         
+        self.get_logger().info(f'Discovered topics: {topic_list}')
+        
         # Pattern to extract module and camera position from topic names
-        # Examples: /camera_front_left/image -> module: front, position: left
-        #           /front_camera_right/image -> module: front, position: right
-        #           /back_left_camera/image -> module: back, position: left
-        camera_pattern = re.compile(r'/.*?(?:camera_)?(\w+)_(\w+)(?:_camera)?/image')
+        # Examples: /front/camera_left/image -> module: front, position: left
+        #           /front/camera_right/image -> module: front, position: right
+        #           /front/camera_left/image/compressed -> module: front, position: left (compressed)
+        #           /back/camera_left/image -> module: back, position: left
+        #           /back/camera_right/image -> module: back, position: right
+        camera_pattern = re.compile(r'/(back|front|left|right|top|bottom)/camera_(left|right)/image(?:/compressed)?')
         
         for topic_name, topic_types in topic_list:
-            if 'sensor_msgs/msg/Image' in topic_types:
+            is_compressed = 'sensor_msgs/msg/CompressedImage' in topic_types
+            is_uncompressed = 'sensor_msgs/msg/Image' in topic_types
+            
+            if is_compressed or is_uncompressed:
                 match = camera_pattern.match(topic_name)
+                self.get_logger().info(f"Checking topic: {topic_name} (compressed: {is_compressed})")
                 if match:
                     module, position = match.groups()
-                    
                     # Initialize module if not exists
                     if module not in camera_modules:
                         camera_modules[module] = {}
@@ -55,16 +62,25 @@ class DebugServer(Node):
                     # Initialize position frame buffer
                     camera_modules[module][position] = None
                     
-                    # Create subscription with dynamic callback
-                    callback = self.create_camera_callback(module, position)
-                    subscription = self.create_subscription(
-                        Image, 
-                        topic_name, 
-                        callback, 
-                        self.qos_profile
-                    )
-                    
-                    self.get_logger().info(f'Subscribed to {topic_name} -> module: {module}, position: {position}')
+                    # Create subscription based on image type
+                    if is_compressed:
+                        callback = self.create_compressed_camera_callback(module, position)
+                        subscription = self.create_subscription(
+                            CompressedImage, 
+                            topic_name, 
+                            callback, 
+                            self.qos_profile
+                        )
+                        self.get_logger().info(f'Subscribed to COMPRESSED {topic_name} -> module: {module}, position: {position}')
+                    else:
+                        callback = self.create_camera_callback(module, position)
+                        subscription = self.create_subscription(
+                            Image, 
+                            topic_name, 
+                            callback, 
+                            self.qos_profile
+                        )
+                        self.get_logger().info(f'Subscribed to UNCOMPRESSED {topic_name} -> module: {module}, position: {position}')
         
         if not camera_modules:
             self.get_logger().warn('No camera topics found with recognized naming pattern')
@@ -72,7 +88,7 @@ class DebugServer(Node):
             self.get_logger().info(f'Discovered modules: {list(camera_modules.keys())}')
 
     def create_camera_callback(self, module, position):
-        """Create a callback function for a specific camera"""
+        """Create a callback function for a specific camera (uncompressed)"""
         def callback(msg):
             global camera_modules
             timestamp = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
@@ -93,6 +109,34 @@ class DebugServer(Node):
             delta_receive = round((time.time() - timestamp) * 1000, 2)
             delta_process = round((time.time() - time_0) * 1000, 2)
             self.get_logger().debug(f"{module.upper()}_{position.upper()} {frame_id}, R: {delta_receive}ms, P: {delta_process}ms")
+        
+        return callback
+
+    def create_compressed_camera_callback(self, module, position):
+        """Create a callback function for a specific camera (compressed)"""
+        def callback(msg):
+            global camera_modules
+            timestamp = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
+            frame_id = msg.header.frame_id
+            time_0 = time.time()
+            
+            try:
+                # Decode compressed image
+                np_arr = np.frombuffer(msg.data, np.uint8)
+                frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+                
+                if frame is None:
+                    self.get_logger().error(f"Can't decode compressed {module}_{position} frame")
+                    return
+                
+                camera_modules[module][position] = frame
+                
+            except Exception as e:
+                self.get_logger().error(f"{module}_{position} compressed callback error: {e}")
+            
+            delta_receive = round((time.time() - timestamp) * 1000, 2)
+            delta_process = round((time.time() - time_0) * 1000, 2)
+            self.get_logger().debug(f"{module.upper()}_{position.upper()} COMPRESSED {frame_id}, R: {delta_receive}ms, P: {delta_process}ms")
         
         return callback
 
@@ -153,9 +197,9 @@ def index():
     
     for module in sorted(camera_modules.keys()):
         positions = sorted(camera_modules[module].keys())
-        html += f'<div style="margin: 20px; padding: 20px; border: 1px solid #ccc;">'
+        html += f'<div style="margin-left: 20px; margin-right: 20px; padding: 20px; border: 1px solid #ccc;">'
         html += f'<h3>{module.upper()} Module</h3>'
-        html += f'<p>Available cameras: {", ".join(positions)}</p>'
+        html += f'<p>Detected cameras: {", ".join(positions)}</p>'
         
         # Individual camera links
         for position in positions:
@@ -179,7 +223,7 @@ def camera_view(module, position):
     
     return f'''
     <h1>{module.upper()} - {position.capitalize()} Camera</h1>
-    <img src="/{module}/{position}/feed" width="100%">
+    <img src="/{module}/{position}/feed" width="640px">
     <p><a href="/">Back to home</a> | <a href="/{module}/stereo">Combined view</a></p>
     '''
 
@@ -195,7 +239,7 @@ def module_stereo_view(module):
     return f'''
     <h1>{module.upper()} - Combined View</h1>
     <p>Cameras: {", ".join(positions)}</p>
-    <img src="/{module}/stereo/feed" width="100%">
+    <img src="/{module}/stereo/feed" width="1280px">
     <p><a href="/">Back to home</a></p>
     '''
 

@@ -23,7 +23,8 @@ def generate_launch_description():
                 {
                     'camera_index': 0,  # Override camera_index for left camera
                     'system_position': 'front',
-                    'camera_side': 'left'
+                    'camera_side': 'left',
+                    'quality': 85  # High quality for front cameras
                 }
             ]
         ),
@@ -37,7 +38,8 @@ def generate_launch_description():
                 {
                     'camera_index': 1,  # Override camera_index for right camera
                     'system_position': 'front',
-                    'camera_side': 'right'
+                    'camera_side': 'right',
+                    'quality': 85  # High quality for front cameras
                 }
             ]
         )

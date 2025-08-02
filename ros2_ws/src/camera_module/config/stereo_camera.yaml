@@ -14,6 +14,12 @@
     # Frame rate
     fps: 30
 
+    # Image quality (0-100, higher is better quality)
+    quality: 80
+
+    # Use compressed image transport (significantly reduces bag size)
+    use_compression: true 
+
     # Publishing settings
     publish_rate: 30.0
     frame_id: "camera_frame"
