@@ -36,34 +36,35 @@ class CaptureNode(Node):
         # Initialize camera 
         self.camera = Picamera2(self.camera_index)
         config = self.camera.create_preview_configuration(
-            main={"format": 'XRGB8888', "size": (self.width, self.height)}
+            main={"format": 'RGB888', "size": (self.width, self.height)}
         )
         self.camera.configure(config)
         
         # Set camera controls for quality
         controls = {
             "FrameRate": self.fps,
+            "AwbEnable": True
         }
         
-        # Apply quality-related controls if supported
-        if self.quality < 50:
-            # Lower quality - prioritize speed
-            controls.update({
-                "Brightness": 0.0,
-                "Contrast": 1.0,
-            })
-        elif self.quality >= 50 and self.quality < 80:
-            # Medium quality
-            controls.update({
-                "Brightness": 0.0,
-                "Contrast": 1.2,
-            })
-        else:
-            # High quality - prioritize image quality
-            controls.update({
-                "Brightness": 0.1,
-                "Contrast": 1.3,
-            })
+        # # Apply quality-related controls if supported
+        # if self.quality < 50:
+        #     # Lower quality - prioritize speed
+        #     controls.update({
+        #         "Brightness": 0.0,
+        #         "Contrast": 1.0,
+        #     })
+        # elif self.quality >= 50 and self.quality < 80:
+        #     # Medium quality
+        #     controls.update({
+        #         "Brightness": 0.0,
+        #         "Contrast": 1.2,
+        #     })
+        # else:
+        #     # High quality - prioritize image quality
+        #     controls.update({
+        #         "Brightness": 0.1,
+        #         "Contrast": 1.3,
+        #     })
         
         self.camera.set_controls(controls)
         self.camera.start()
@@ -89,7 +90,7 @@ class CaptureNode(Node):
             
             if cv_image is not None:
                 # Convert from RGB to BGR for OpenCV/ROS compatibility
-                cv_image = cv2.cvtColor(cv_image, cv2.COLOR_RGB2BGR)
+                # cv_image = cv2.cvtColor(cv_image, cv2.COLOR_RGB2BGR)
                 
                 if self.use_compression:
                     # Create compressed image message
