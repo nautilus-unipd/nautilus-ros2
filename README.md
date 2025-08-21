@@ -93,10 +93,14 @@ def generate_launch_description():
 ```
 In the future, if you need to create more node with different positions, create a new launch file following the existing patterns, and change all the references to the position (such as `down` in the previous example) to what you need.
 
+# How to run
+
 
 ## 0. Install and build the ROS2 image
-This step is needed as this repository rewrites an old camera acquisition implementation form C++ to python (`camera_module`) and some additional libraries are needed. When the docker image will be unified this step will not be needed anymore.  \
-For now, run these steps (do this after cloning this repo on the user home directory):
+
+> [!WARNING]  
+> This step is needed as this repository rewrites an old camera  acquisition implementation form C++ to python (`camera_module`) and some additional libraries are needed. When the docker image will be unified this step will not be needed anymore.  \
+> For now, run these steps (do this after cloning this repo on the user home directory):
 
 ```shell
 # go to the user home
