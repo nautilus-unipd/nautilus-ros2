@@ -91,7 +91,8 @@ def generate_launch_description():
         )
     ])
 ```
-In the future, if you need to create more node with different positions, create a new launch file following the existing patterns, and change all the references to the position (such as `down` in the previous example) to what you need.
+> [!NOTE]
+> In the future, if you need to create more node with different positions, create a new launch file following the existing patterns, and change all the references to the position (such as `down` in the previous example) to what you need.
 
 # How to run
 
