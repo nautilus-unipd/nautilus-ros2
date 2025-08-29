@@ -139,6 +139,7 @@ def main():
 
         #If the system gets interrupted, stop the pump output and print the reason of the interruption
         print("\nScript interrupted")
+    finally:
         pump_r.off()
         print("\nSet right pump value to zero")
         pump_l.off()
@@ -148,4 +149,5 @@ def main():
 
 
 if __name__ == '__main__':
+
     main()
