@@ -193,6 +193,7 @@ class NodePumpCtrl(Node):
         except Exception as e:
             #If the system gets interrupted, stop the pump output and print the reason of the interruption
             self.get_logger().info("\nScript interrupted")
+        finally:
             pump_r.off()
             self.get_logger().info("\nSet right pump value to zero")
             pump_l.off()
