@@ -1,0 +1,8 @@
+# Manually define parameters for this node
+/node_pump/node_pump:
+    ros__parameters:
+        debug: true
+        frequency: 0.01
+        kp: 1.0
+        ki: 0.0
+        kd: 0.0

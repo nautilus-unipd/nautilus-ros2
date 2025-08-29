@@ -10,12 +10,21 @@ ROS2_ws/ # ROS2 workspace folder structure
     │   ├── launch/          # camera module launch files
     │   ├── resource/        
     │   └── test/            
-    └── debug_server/        # debug server node folder
-        ├── debug_server/    # debug server code
-        ├── launch/          # debug server launch files
-        ├── resource/        
-        └── test/            
+    ├── debug_server/        # debug server node folder
+    │   ├── debug_server/    # debug server code
+    │   ├── launch/          # debug server launch files
+    │   ├── resource/           
+    │   └── test/    
+    ├── node_pump/           # pump node folder
+    │   ├── node_pump/       # pump node code
+    │   ├── config/          # pump module configuration files
+    │   ├── launch/          # pump module launch files
+    │   ├── resource/        
+    │   └── test/ 
+    └── custom_pump_msgs/    # custom pump messages folder
+        └── msg/             # custom message definitions
 ``` 
+
 Future nodes must be placed accordingly to the ROS2 project structure in the `src` folder.  \
 For the `camera_module` the general configurations such as resolution, framerate, quality, ecc., can be changed from the `config` folder:
 
