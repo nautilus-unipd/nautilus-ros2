@@ -143,12 +143,16 @@ fi
 ## 2. Launch the camera script
 Now you can choose to run the `launch-[back|down|front].sh` script that will start the respective camera node.\
 Make sure to be in different raspberries for each node. As for now the code will not give any errors if multiple nodes are executed in the same system, just the image will be duplicated.
+
 ## 3. Launch debug server
 The debug server is a webpage that allow the user to see the camera feed. This server can be run on one or multiple raspberries without any issues.\
 To start the server connect to a new session with the `connect.sh` script (in a new terminal window) and after that run the `debug-server.sh`.\
 You can now connect at `http://<raspberry-ip>:8081`.
 
-## 4. Possible problems
+## 4. Launch the pump node
+To launch the pump node, you can use the `pump.sh` script. This script will start the pump node and begin recording the camera feeds at internet address `http://<raspberry-ip>:8888`.
+
+## 5. Possible problems
 If you encounter any problems, a useful first step is to execute the `clean-build.sh`. This script will delete the current `build`, `install` and `log` ROS2 folders of the project. Make sure to save any log files that may be useful to you before executing this script.
 
 ## TODO
